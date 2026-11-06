@@ -1,0 +1,7 @@
+  PASS  max|x_gpu-x_ser|/max|x_ser| = 2.977e-15  (P=1, cg)
+  PASS  max|x_gpu-x_ser|/max|x_ser| = 2.646e-15  (P=1, cg1)
+  PASS  max|x_gpu-x_ser|/max|x_ser| = 2.812e-15  (P=2, cg)
+  PASS  max|x_gpu-x_ser|/max|x_ser| = 2.812e-15  (P=2, cg1)
+  FAIL  max|x_gpu-x_ser|/max|x_ser| = nan  (P=4, cg)
+  FAIL  max|x_gpu-x_ser|/max|x_ser| = nan  (P=4, cg1)
+validation: 2 failure(s)

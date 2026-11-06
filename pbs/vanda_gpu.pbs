@@ -1,0 +1,11 @@
+#!/bin/bash
+# GPU runs on one Vanda A40 (MPI + OpenMP target offload, NVIDIA HPC SDK).
+# For both GPUs of a node use:  select=1:ncpus=72:mpiprocs=2:ompthreads=36:ngpus=2
+#PBS -N cg_gpu
+#PBS -q auto_free
+#PBS -j oe
+#PBS -l walltime=01:00:00
+#PBS -l select=1:ncpus=36:mpiprocs=1:ompthreads=36:ngpus=1
+
+cd "${PBS_O_WORKDIR:-.}"
+bash scripts/gpu_job.sh

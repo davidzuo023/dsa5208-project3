@@ -1,0 +1,28 @@
+#!/bin/bash
+# ----------------------------------------------------------------------------------------
+# Full benchmark suite on NUS Vanda, free queue auto_free (no project code needed),
+# one CPU node: 2 x Intel Xeon 8452Y = 72 cores.
+#   qsub pbs/vanda_suite.pbs            (from the project root)
+# Results -> results/vanda/bench.csv, stream.csv, env.txt, validation/summary.txt
+# ----------------------------------------------------------------------------------------
+#PBS -N cg_vanda
+#PBS -q auto_free
+#PBS -j oe
+#PBS -l walltime=03:00:00
+#PBS -l select=1:ncpus=72:mpiprocs=72:ompthreads=1:mem=200gb
+
+cd "$PBS_O_WORKDIR"
+module load gcc/13.1.0 openmpi/gcc/64/4.1.8
+module list 2>&1 | head -20
+# Vanda forbids cross-process memory reads (CMA): Open MPI's shared-memory transport must
+# copy through its buffers instead, otherwise large intra-node messages fail ("Read -1 ... errno = 1")
+export OMPI_MCA_btl_vader_single_copy_mechanism=none
+# silence harmless "unable to open mca_osc_ucx / mca_plm_tm" messages for optional plugins
+export OMPI_MCA_mca_base_component_show_load_errors=0
+
+export BIN=bin_vanda
+make -B BIN=$BIN OPT="-O3 -march=native" all   # -B: always rebuild against the loaded MPI
+
+OUT=results/vanda/validation bash scripts/validate.sh quick || echo "validation FAILED - see output above"
+
+MACHINE=vanda NS=512 NW=192 ITERS=50 REPS=3 VARIANT_PMIN=4 bash scripts/run_suite.sh

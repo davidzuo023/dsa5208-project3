@@ -1,0 +1,18 @@
+3D serial reference N=40: iters=146 true_relres=8.241183e-09 err_max=2.394663e-05
+  cg       60 runs: worst max|x_par-x_ser|/max|x_ser| = 3.47e-15, worst |iters-iters_ser| = 0
+  cg1      60 runs: worst max|x_par-x_ser|/max|x_ser| = 3.80e-15, worst |iters-iters_ser| = 0
+  pipecg   60 runs: worst max|x_par-x_ser|/max|x_ser| = 1.99e-12, worst |iters-iters_ser| = 0
+3D edge cases: 30 runs, worst diff 1.31e-14
+3D grid study mpi    cg     P=4 : observed order 2.000
+3D grid study mpi    pipecg P=4 : observed order 2.000
+3D grid study serial cg     P=1 : observed order 2.000
+2D serial reference N=100: iters=298 true_relres=9.369542e-09 err_max=9.119216e-06
+  cg       40 runs: worst max|x_par-x_ser|/max|x_ser| = 3.62e-15, worst |iters-iters_ser| = 0
+  cg1      40 runs: worst max|x_par-x_ser|/max|x_ser| = 6.95e-15, worst |iters-iters_ser| = 0
+  pipecg   40 runs: worst max|x_par-x_ser|/max|x_ser| = 3.13e-11, worst |iters-iters_ser| = 0
+2D edge cases: 30 runs, worst diff 1.18e-14
+2D grid study mpi    cg     P=4 : observed order 2.000
+2D grid study mpi    pipecg P=4 : observed order 2.000
+2D grid study serial cg     P=1 : observed order 2.000
+
+RESULT: PASS

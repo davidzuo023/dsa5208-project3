@@ -1,0 +1,10 @@
+serial reference N=40: iters=146 true_relres=8.241183e-09 err_max=2.394663e-05
+  cg       12 runs: worst max|x_par-x_ser|/max|x_ser| = 2.98e-15, worst |iters-iters_ser| = 0
+  cg1      12 runs: worst max|x_par-x_ser|/max|x_ser| = 3.80e-15, worst |iters-iters_ser| = 0
+  pipecg   12 runs: worst max|x_par-x_ser|/max|x_ser| = 1.96e-12, worst |iters-iters_ser| = 0
+edge cases: 12 runs, worst diff 1.16e-14
+grid study mpi    cg     P=4 : observed order 2.000
+grid study mpi    pipecg P=4 : observed order 2.000
+grid study serial cg     P=1 : observed order 2.000
+
+RESULT: PASS

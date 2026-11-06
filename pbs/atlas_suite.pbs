@@ -1,0 +1,30 @@
+#!/bin/bash
+# ----------------------------------------------------------------------------------------
+# Full benchmark suite on NUS Atlas (queue parallel24: 24-core nodes, 10 GbE).
+#   qsub pbs/atlas_suite.pbs            (from the project root)
+# Results -> results/atlas/bench.csv, stream.csv, env.txt; then on the login node:
+#   make report RESULTS=results/atlas
+#
+# Check `hpc pbs help` / `qstat -Q` for the queues you may use; for a single node set
+# select=1. The script adapts PLIST to whatever the select line provides.
+# ----------------------------------------------------------------------------------------
+#PBS -N cg_atlas
+#PBS -q parallel24
+#PBS -l select=2:ncpus=24:mpiprocs=24:ompthreads=1:mem=96gb
+#PBS -l place=scatter:excl        # whole nodes, one chunk per node (delete if the queue rejects it)
+#PBS -l walltime=04:00:00
+#PBS -j oe
+##PBS -P <your_project_code>
+
+cd "$PBS_O_WORKDIR"
+source /etc/profile.d/rec_modules.sh 2>/dev/null || true
+module purge 2>/dev/null || true
+module load openmpi 2>/dev/null || module load mpi/openmpi 2>/dev/null || true   # <- adjust if needed
+module list 2>&1 | head -20
+
+export BIN=bin_atlas            # separate build dir: the home directory is shared between clusters
+make -B BIN=$BIN OPT="-O3 -march=native" all   # -B: always rebuild against the loaded MPI
+
+OUT=results/atlas/validation bash scripts/validate.sh quick || echo "validation FAILED - see output above"
+
+MACHINE=atlas NS=512 NW=192 ITERS=50 REPS=3 VARIANT_PMIN=4 bash scripts/run_suite.sh

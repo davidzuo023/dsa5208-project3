@@ -1,0 +1,17 @@
+#!/bin/bash
+# One 32-core chunk (one socket), same shape as a chunk of pbs/vanda256.pbs:
+# STREAM bandwidth for the performance model, serial baseline, quick correctness suite.
+#PBS -N cg_node
+#PBS -j oe
+#PBS -l walltime=01:00:00
+#PBS -l select=1:ncpus=32:mpiprocs=32:ompthreads=1:mem=60gb
+
+cd "$PBS_O_WORKDIR"
+module load gcc/13.1.0 openmpi/gcc/64/4.1.8
+export OMPI_MCA_btl_vader_single_copy_mechanism=none
+export OMPI_MCA_mca_base_component_show_load_errors=0
+export BIN=bin_node
+make -B BIN=$BIN OPT="-O3 -march=native" all
+lscpu | grep -E "Model name"; grep Cpus_allowed_list /proc/self/status
+OUT=results/vanda_node/validation bash scripts/validate.sh quick || echo "validation FAILED"
+MACHINE=vanda_node NS=512 ITERS=50 REPS=3 EXPERIMENTS="stream serial" bash scripts/run_suite.sh

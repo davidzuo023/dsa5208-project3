@@ -1,0 +1,15 @@
+#!/bin/bash
+# Serial problem-size study of the 2D problem on one core: N = 256 ... 8192
+# (N^2 unknowns, 5N^2 - 4N nonzeros); complete solves up to N = 4096.
+#   qsub -P <project> pbs/vanda_sizes2d.pbs
+#PBS -N cg_sizes2d
+#PBS -j oe
+#PBS -l walltime=01:30:00
+#PBS -l select=1:ncpus=1:mpiprocs=1:ompthreads=1:mem=16gb
+
+cd "$PBS_O_WORKDIR"
+module load gcc/13.1.0 openmpi/gcc/64/4.1.8
+export BIN=bin_sizes2d
+make -B BIN=$BIN OPT="-O3 -march=native" $BIN/cg_serial
+MACHINE=vanda_sizes2d ITERS=20 REPS=3 SIZES2D="256 512 1024 2048 4096 8192" SOLVE2D_MAX=4096 \
+EXPERIMENTS="sizes2d" bash scripts/run_suite.sh

@@ -1,0 +1,21 @@
+#!/bin/bash
+# 2D problem (5-point stencil) on 8 nodes x 32 cores: strong scaling of 8192^2 from 1 to 256
+# processes with slabs / blocking halo / CG1 variants from one node up, weak scaling with
+# 2048^2 points per process, and complete solves on all cores.
+#   qsub -P <project> pbs/vanda2d.pbs
+#PBS -N cg_vanda2d
+#PBS -j oe
+#PBS -l walltime=01:30:00
+#PBS -l select=8:ncpus=32:mpiprocs=32:ompthreads=1:mem=60gb
+#PBS -l place=scatter
+
+cd "$PBS_O_WORKDIR"
+module load gcc/13.1.0 openmpi/gcc/64/4.1.8
+export OMPI_MCA_btl_vader_single_copy_mechanism=none
+export OMPI_MCA_mca_base_component_show_load_errors=0
+echo "nodes:"; sort "$PBS_NODEFILE" | uniq -c
+CORES=$(wc -l < "$PBS_NODEFILE")
+export BIN=bin_2d$CORES
+make -B BIN=$BIN OPT="-O3 -march=native" all
+MACHINE=${MACHINE:-vanda2d} NS2D=8192 NW2D=2048 ITERS=50 REPS=3 VARIANT_PMIN=32 \
+EXPERIMENTS="strong2d weak2d solve2d" bash scripts/run_suite.sh

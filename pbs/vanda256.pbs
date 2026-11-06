@@ -1,0 +1,28 @@
+#!/bin/bash
+# Multi-node pure-MPI study on Vanda: 8 nodes x 32 cores = 256 MPI processes.
+# The free queue (auto_free -> cpu_parallel) stops at 160 cores; 256 cores need a project:
+#   qsub -P personal-<nusnet> -q batch_cpu pbs/vanda256.pbs
+# Free-queue run on 5 nodes (160 cores):
+#   qsub -l select=5:ncpus=32:mpiprocs=32:ompthreads=1:mem=60gb pbs/vanda256.pbs
+# Strong scaling (512^3 from 1 core, 768^3 from one node), weak scaling (192^3 per process),
+# CG vs pipelined CG and blocking vs overlapped halos at scale, hybrid split, time to solution.
+#PBS -N cg_vanda256
+#PBS -q auto_free
+#PBS -j oe
+#PBS -l walltime=02:30:00
+#PBS -l select=8:ncpus=32:mpiprocs=32:ompthreads=1:mem=60gb
+#PBS -l place=scatter
+
+cd "$PBS_O_WORKDIR"
+module load gcc/13.1.0 openmpi/gcc/64/4.1.8
+export OMPI_MCA_btl_vader_single_copy_mechanism=none
+export OMPI_MCA_mca_base_component_show_load_errors=0
+echo "nodes:"; sort "$PBS_NODEFILE" | uniq -c
+
+CORES=$(wc -l < "$PBS_NODEFILE")
+export BIN=bin_mn$CORES        # one build directory per job size, so two queued jobs never share binaries
+make -B BIN=$BIN OPT="-O3 -march=native" all
+
+# P = 1 2 4 8 16 | 32 (one node) | 64 96 128 ... (whole nodes); results/vanda<cores>/
+MACHINE=${MACHINE:-vanda$CORES} NS=512 NS2=768 NW=192 ITERS=50 REPS=3 VARIANT_PMIN=32 \
+EXPERIMENTS="strong strong2 variants weak hybrid solve" bash scripts/run_suite.sh

@@ -1,0 +1,14 @@
+#!/bin/bash
+# Serial problem-size study on one Vanda core: N = 64 ... 512 (N^3 unknowns, ~7N^3 nonzeros).
+#PBS -N cg_sizes
+#PBS -q auto_free
+#PBS -j oe
+#PBS -l walltime=01:30:00
+#PBS -l select=1:ncpus=1:mpiprocs=1:ompthreads=1:mem=16gb
+
+cd "$PBS_O_WORKDIR"
+module load gcc/13.1.0 openmpi/gcc/64/4.1.8
+export BIN=bin_sizes
+make -B BIN=$BIN OPT="-O3 -march=native" $BIN/cg_serial
+MACHINE=vanda_sizes ITERS=20 REPS=3 SIZES="64 96 128 192 256 320 384 448 512" \
+EXPERIMENTS="sizes" bash scripts/run_suite.sh

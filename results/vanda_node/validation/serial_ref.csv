@@ -1,0 +1,2 @@
+code,alg,comm,decomp,P,T,px,py,pz,N0,N1,N2,nloc_max,nloc_avg,iters,converged,t_setup,t_solve,t_iter,t_spmv,t_halo,t_reduce,t_vec,relres,true_relres,err_max,err_l2,halo_bytes_iter_max,halo_bytes_iter_tot,msgs_iter_max,mlups
+serial,cg,none,none,1,1,1,1,1,40,40,40,64000,64000,146,1,9.264530e-04,2.354003e-02,1.612331e-04,9.630076e-03,0,0,1.389963e-02,8.241183e-09,8.241183e-09,2.394663e-05,8.960618e-06,0,0,0,396.941

@@ -1,0 +1,16 @@
+#!/bin/bash
+# Full correctness suite on one node (works on Atlas or Vanda; adjust the select line/queue).
+#   qsub pbs/validate.pbs        -> results/validation/summary.txt
+#PBS -N cg_validate
+#PBS -l select=1:ncpus=8:mpiprocs=8:ompthreads=1:mem=16gb
+#PBS -l walltime=00:30:00
+#PBS -j oe
+##PBS -q <queue_name>
+##PBS -P <your_project_code>
+
+cd "$PBS_O_WORKDIR"
+source /etc/profile.d/rec_modules.sh 2>/dev/null || true
+module load openmpi 2>/dev/null || true
+export BIN=bin_validate
+make -B BIN=$BIN all
+MPIFLAGS="" bash scripts/validate.sh full

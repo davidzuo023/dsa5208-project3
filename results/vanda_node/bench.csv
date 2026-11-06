@@ -1,0 +1,4 @@
+exp,rep,code,alg,comm,decomp,P,T,px,py,pz,N0,N1,N2,nloc_max,nloc_avg,iters,converged,t_setup,t_solve,t_iter,t_spmv,t_halo,t_reduce,t_vec,relres,true_relres,err_max,err_l2,halo_bytes_iter_max,halo_bytes_iter_tot,msgs_iter_max,mlups
+serial,1,serial,cg,none,none,1,1,1,1,1,512,512,512,134217728,134217728,50,0,4.030806e-01,2.817499e+01,5.634998e-01,1.243216e+01,0,0,1.574282e+01,9.163500e+00,9.163500e+00,5.087834e-02,1.646624e-02,0,0,0,238.186
+serial,2,serial,cg,none,none,1,1,1,1,1,512,512,512,134217728,134217728,50,0,4.039696e-01,2.732311e+01,5.464622e-01,1.212426e+01,0,0,1.519885e+01,9.163500e+00,9.163500e+00,5.087834e-02,1.646624e-02,0,0,0,245.612
+serial,3,serial,cg,none,none,1,1,1,1,1,512,512,512,134217728,134217728,50,0,4.085274e-01,2.797930e+01,5.595860e-01,1.246100e+01,0,0,1.551829e+01,9.163500e+00,9.163500e+00,5.087834e-02,1.646624e-02,0,0,0,239.852
